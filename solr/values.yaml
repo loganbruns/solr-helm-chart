@@ -63,6 +63,12 @@ volumeClaimTemplates:
   accessModes:
     - "ReadWriteOnce"
 
+# Configuration for using tmpfs (in memory) transaction logs
+#   Note: this is unsafe since if the pod crashes it will be removed
+tlogInMemory:
+  enabled: false
+  sizeLimit: "2Gi"
+
 # Configuration for solr TLS handling, see README.md for more instructions
 tls:
   enabled: false

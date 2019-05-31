@@ -33,6 +33,12 @@ spec:
 {{ tpl (toYaml .Values.affinity) .  | indent 8 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
+{{- if .Values.tlogInMemory.enabled }}
+        - name: tlog-volume
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ .Values.tlogInMemory.sizeLimit }}
+{{- end }}
 {{- if .Values.tls.enabled }}
         - name: keystore-volume
           emptyDir: {}
@@ -192,6 +198,10 @@ spec:
 {{ if .Values.tls.enabled }}
             - name: "keystore-volume"
               mountPath: "/etc/ssl/keystores"
+{{ end }}
+{{ if .Values.tlogInMemory.enabled }}
+            - name: "tlog-volume"
+              mountPath: "/tlog"
 {{ end }}
   volumeClaimTemplates:
     - metadata:

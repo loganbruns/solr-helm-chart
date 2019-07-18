@@ -59,7 +59,7 @@ spec:
               path: solr.xml
       initContainers:
         - name: check-zk
-          image: busybox:latest
+          image: "{{ .Values.image.registry | default "" }}busybox:latest"
           command:
             - 'sh'
             - '-c'
@@ -79,7 +79,7 @@ spec:
               echo "Did NOT see a ZK leader after 240 secs!";
               exit 1;
         - name: "cp-solr-xml"
-          image: busybox:latest
+          image: "{{ .Values.image.registry | default "" }}busybox:latest"
           command: ['sh', '-c', 'cp /tmp/solr.xml /tmp-config/solr.xml']
           volumeMounts:
           - name: "solr-xml"
@@ -89,7 +89,7 @@ spec:
 
 {{- if .Values.tls.enabled }}
         - name: "setup-keystore-and-properties"
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry | default "" }}{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
             - "sh"
@@ -132,7 +132,7 @@ spec:
 {{ end }}
       containers:
         - name: solr
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry | default "" }}{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
